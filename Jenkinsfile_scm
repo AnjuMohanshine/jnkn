@@ -1,0 +1,17 @@
+node {
+	stage('prepare') {
+		git branch: 'main', url: 'https://github.com/AnjuMohanshine/restro.git'
+	}
+	
+	stage('build') {
+		def mvnHome = tool 'Maven'
+		withEnv(["MVN_HOME=$mvnHome"]){
+			sh '"$MVN_HOME/bin/mvn" clean compile package'
+		}
+	}
+	
+	stage('deploy') {
+		deploy adapters: [tomcat9(credentialsId: 'a3072304-33d3-44c6-b19d-76accd924da2', path: '', url: 'http://13.233.83.132:8080/')], contextPath: null, war: '**/*.war'
+	}
+
+}
